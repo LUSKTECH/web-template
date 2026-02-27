@@ -11,6 +11,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check-secrets:
+    name: Check Secrets
+    runs-on: ubuntu-latest
+    outputs:
+      has-snyk: ${{ steps.snyk-check.outputs.defined }}
+      has-safety: ${{ steps.safety-check.outputs.defined }}
+    steps:
+      - name: Check SNYK_TOKEN
+        id: snyk-check
+        shell: bash
+        run: |
+          if [ "${{ secrets.SNYK_TOKEN }}" != '' ]; then
+            echo "defined=true" >> $GITHUB_OUTPUT
+          else
+            echo "defined=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check SAFETY_API_KEY
+        id: safety-check
+        shell: bash
+        run: |
+          if [ "${{ secrets.SAFETY_API_KEY }}" != '' ]; then
+            echo "defined=true" >> $GITHUB_OUTPUT
+          else
+            echo "defined=false" >> $GITHUB_OUTPUT
+          fi
+
   trivy:
     name: Trivy Scan
     if: ${{ vars.TRIVY_ENABLED == 'true' }}
@@ -36,7 +63,8 @@ jobs:
 
   snyk:
     name: Snyk Scan
-    if: ${{ secrets.SNYK_TOKEN != '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-snyk == 'true'
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -57,14 +85,16 @@ jobs:
 
   snyk-skip-notice:
     name: Snyk Skip Notice
-    if: ${{ secrets.SNYK_TOKEN == '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-snyk != 'true'
     runs-on: ubuntu-latest
     steps:
       - run: echo "::notice::Snyk scan skipped — SNYK_TOKEN secret is not configured."
 
   safety:
     name: Safety CLI Scan
-    if: ${{ secrets.SAFETY_API_KEY != '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-safety == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -85,7 +115,8 @@ jobs:
 
   safety-skip-notice:
     name: Safety Skip Notice
-    if: ${{ secrets.SAFETY_API_KEY == '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-safety != 'true'
     runs-on: ubuntu-latest
     steps:
       - run: echo "::notice::Safety CLI scan skipped — SAFETY_API_KEY secret is not configured."

@@ -9,9 +9,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check-secrets:
+    name: Check Secrets
+    runs-on: ubuntu-latest
+    outputs:
+      has-qlty: ${{ steps.qlty-check.outputs.defined }}
+    steps:
+      - name: Check QLTY_TOKEN
+        id: qlty-check
+        shell: bash
+        run: |
+          if [ "${{ secrets.QLTY_TOKEN }}" != '' ]; then
+            echo "defined=true" >> $GITHUB_OUTPUT
+          else
+            echo "defined=false" >> $GITHUB_OUTPUT
+          fi
+
   qlty:
     name: qlty Analysis
-    if: ${{ secrets.QLTY_TOKEN != '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-qlty == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -37,7 +54,8 @@ jobs:
 
   qlty-skip-notice:
     name: qlty Skip Notice
-    if: ${{ secrets.QLTY_TOKEN == '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-qlty != 'true'
     runs-on: ubuntu-latest
     steps:
       - run: echo "::notice::qlty code quality analysis skipped — QLTY_TOKEN secret is not configured."

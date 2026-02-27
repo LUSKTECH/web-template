@@ -65,11 +65,17 @@ describe("Property 7: Secret-guarded workflows have skip conditionals", () => {
 
           expect(hasIfGuard).toBe(true);
 
-          // The guard must specifically check for non-empty value (!= '') or enabled state
-          // This ensures the conditional is actually gating on the secret's presence
-          const hasPresenceCheck =
-            content.includes(`${guardPattern} != ''`) ||
-            content.includes(`${guardPattern} == 'true'`);
+          // The guard must specifically check for non-empty value (!= '') or enabled state.
+          // The check may appear in a YAML `if:` or inside a bash script block.
+          const presencePatterns = [
+            `${guardPattern} != ''`,
+            `${guardPattern} == 'true'`,
+            `${guardPattern} }}" != ''`,
+            `${guardPattern} }}" == 'true'`,
+          ];
+          const hasPresenceCheck = presencePatterns.some((p) =>
+            content.includes(p),
+          );
 
           expect(hasPresenceCheck).toBe(true);
         },

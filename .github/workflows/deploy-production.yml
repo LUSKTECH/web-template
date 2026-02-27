@@ -9,9 +9,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check-secrets:
+    name: Check Secrets
+    runs-on: ubuntu-latest
+    outputs:
+      has-vercel: ${{ steps.vercel-check.outputs.defined }}
+      has-netlify: ${{ steps.netlify-check.outputs.defined }}
+    steps:
+      - name: Check VERCEL_TOKEN
+        id: vercel-check
+        shell: bash
+        run: |
+          if [ "${{ secrets.VERCEL_TOKEN }}" != '' ]; then
+            echo "defined=true" >> $GITHUB_OUTPUT
+          else
+            echo "defined=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check NETLIFY_AUTH_TOKEN
+        id: netlify-check
+        shell: bash
+        run: |
+          if [ "${{ secrets.NETLIFY_AUTH_TOKEN }}" != '' ]; then
+            echo "defined=true" >> $GITHUB_OUTPUT
+          else
+            echo "defined=false" >> $GITHUB_OUTPUT
+          fi
+
   vercel-production:
     name: Vercel Production Deploy
-    if: ${{ secrets.VERCEL_TOKEN != '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-vercel == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -36,14 +64,16 @@ jobs:
 
   vercel-skip-notice:
     name: Vercel Skip Notice
-    if: ${{ secrets.VERCEL_TOKEN == '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-vercel != 'true'
     runs-on: ubuntu-latest
     steps:
       - run: echo "::notice::Vercel production deploy skipped — VERCEL_TOKEN secret is not configured."
 
   netlify-production:
     name: Netlify Production Deploy
-    if: ${{ secrets.NETLIFY_AUTH_TOKEN != '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-netlify == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -74,7 +104,8 @@ jobs:
 
   netlify-skip-notice:
     name: Netlify Skip Notice
-    if: ${{ secrets.NETLIFY_AUTH_TOKEN == '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-netlify != 'true'
     runs-on: ubuntu-latest
     steps:
       - run: echo "::notice::Netlify production deploy skipped — NETLIFY_AUTH_TOKEN secret is not configured."

@@ -9,9 +9,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check-secrets:
+    name: Check Secrets
+    runs-on: ubuntu-latest
+    outputs:
+      has-lhci: ${{ steps.lhci-check.outputs.defined }}
+    steps:
+      - name: Check LHCI_GITHUB_APP_TOKEN
+        id: lhci-check
+        shell: bash
+        run: |
+          if [ "${{ secrets.LHCI_GITHUB_APP_TOKEN }}" != '' ]; then
+            echo "defined=true" >> $GITHUB_OUTPUT
+          else
+            echo "defined=false" >> $GITHUB_OUTPUT
+          fi
+
   lighthouse:
     name: Lighthouse CI
-    if: ${{ secrets.LHCI_GITHUB_APP_TOKEN != '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-lhci == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -35,7 +52,8 @@ jobs:
 
   lighthouse-skip-notice:
     name: Lighthouse Skip Notice
-    if: ${{ secrets.LHCI_GITHUB_APP_TOKEN == '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-lhci != 'true'
     runs-on: ubuntu-latest
     steps:
       - run: echo "::notice::Lighthouse CI skipped — LHCI_GITHUB_APP_TOKEN secret is not configured."

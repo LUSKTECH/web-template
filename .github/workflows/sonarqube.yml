@@ -11,9 +11,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check-secrets:
+    name: Check Secrets
+    runs-on: ubuntu-latest
+    outputs:
+      has-sonar: ${{ steps.sonar-check.outputs.defined }}
+    steps:
+      - name: Check SONAR_TOKEN
+        id: sonar-check
+        shell: bash
+        run: |
+          if [ "${{ secrets.SONAR_TOKEN }}" != '' ]; then
+            echo "defined=true" >> $GITHUB_OUTPUT
+          else
+            echo "defined=false" >> $GITHUB_OUTPUT
+          fi
+
   sonarqube:
     name: SonarQube Scan
-    if: ${{ secrets.SONAR_TOKEN != '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-sonar == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -37,7 +54,8 @@ jobs:
 
   sonarqube-skip-notice:
     name: SonarQube Skip Notice
-    if: ${{ secrets.SONAR_TOKEN == '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-sonar != 'true'
     runs-on: ubuntu-latest
     steps:
       - run: echo "::notice::SonarQube analysis skipped — SONAR_TOKEN secret is not configured."

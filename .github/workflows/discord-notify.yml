@@ -6,8 +6,25 @@ on:
     types: [completed]
 
 jobs:
+  check-secrets:
+    name: Check Secrets
+    runs-on: ubuntu-latest
+    outputs:
+      has-discord: ${{ steps.discord-check.outputs.defined }}
+    steps:
+      - name: Check DISCORD_WEBHOOK_URL
+        id: discord-check
+        shell: bash
+        run: |
+          if [ "${{ secrets.DISCORD_WEBHOOK_URL }}" != '' ]; then
+            echo "defined=true" >> $GITHUB_OUTPUT
+          else
+            echo "defined=false" >> $GITHUB_OUTPUT
+          fi
+
   notify:
-    if: ${{ secrets.DISCORD_WEBHOOK_URL != '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-discord == 'true'
     uses: LUSKTECH/.github/.github/workflows/discord-notify.yml@main
     with:
       status: ${{ github.event.workflow_run.conclusion }}
@@ -21,7 +38,8 @@ jobs:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
   notify-skip-notice:
-    if: ${{ secrets.DISCORD_WEBHOOK_URL == '' }}
+    needs: [check-secrets]
+    if: needs.check-secrets.outputs.has-discord != 'true'
     runs-on: ubuntu-latest
     steps:
       - run: echo "::notice::Discord notification skipped — DISCORD_WEBHOOK_URL secret is not configured."
