@@ -6,6 +6,10 @@ on:
   schedule:
     - cron: '0 6 * * 1' # Weekly on Monday at 06:00 UTC
 
+permissions:
+  contents: read
+  security-events: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -79,7 +83,7 @@ jobs:
       - run: npm ci
 
       - name: Run Snyk test
-        uses: snyk/actions/node@master
+        uses: snyk/actions/node@v1.0.0
         with:
           args: --severity-threshold=high
 

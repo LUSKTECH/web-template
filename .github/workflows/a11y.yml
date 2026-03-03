@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -27,5 +30,5 @@ jobs:
       - name: Start server and run axe accessibility tests
         run: |
           npx next start -p 3000 &
-          sleep 5
+          npx wait-on http://localhost:3000 --timeout 30000
           npx @axe-core/cli http://localhost:3000 --exit
