@@ -1,8 +1,8 @@
 # Lusk Website Template
 
-[![CI](https://github.com/LUSKTECH/lusk-website-template/actions/workflows/ci.yml/badge.svg)](https://github.com/LUSKTECH/lusk-website-template/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/LUSKTECH/lusk-website-template/branch/main/graph/badge.svg)](https://codecov.io/gh/LUSKTECH/lusk-website-template)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=LUSKTECH_lusk-website-template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=LUSKTECH_lusk-website-template)
+[![CI](https://github.com/LUSKTECH/web-template/actions/workflows/ci.yml/badge.svg)](https://github.com/LUSKTECH/web-template/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/LUSKTECH/web-template/branch/main/graph/badge.svg)](https://codecov.io/gh/LUSKTECH/web-template)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=LUSKTECH_web-template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=LUSKTECH_web-template)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A reusable Next.js + TypeScript website template for Lusk Technologies. Ships with compliance pages, analytics/monitoring integrations, security tooling, CI/CD workflows, GitHub community documents, and deployment support for both Vercel and Netlify.
@@ -199,5 +199,6 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ![Repobeats analytics image](https://repobeats.axiom.co/api/embed/PLACEHOLDER_REPOBEATS_ID.svg 'Repobeats analytics image')
 
-AI Usage Disclaimer
+## AI Usage Disclaimer
+
 Portions of this codebase were generated with the assistance of Large Language Models (LLMs). All AI-generated code has been reviewed and tested to ensure quality and correctness.
