@@ -33,7 +33,7 @@
     "@vitest/coverage-istanbul": "4.0.18",
     "eslint": "10.0.3",
     "eslint-config-next": "16.1.6",
-    "fast-check": "4.5.3",
+    "fast-check": "4.6.0",
     "husky": "9.1.7",
     "jsdom": "^28.1.0",
     "lint-staged": "16.3.2",
