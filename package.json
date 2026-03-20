@@ -32,7 +32,7 @@
     "@vitejs/plugin-react": "^5.1.4",
     "@vitest/coverage-istanbul": "4.1.0",
     "eslint": "10.0.3",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.2.0",
     "fast-check": "4.6.0",
     "husky": "9.1.7",
     "jsdom": "^28.1.0",
