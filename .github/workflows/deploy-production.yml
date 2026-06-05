@@ -93,7 +93,7 @@ jobs:
       - run: npx vitest --run
 
       - name: Deploy to Netlify (Production)
-        uses: nwtgck/actions-netlify@v3
+        uses: nwtgck/actions-netlify@v4
         with:
           publish-dir: ./out
           production-deploy: true
