@@ -45,7 +45,7 @@ jobs:
     if: needs.check-secrets.outputs.has-vercel == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v6
         with:
@@ -79,7 +79,7 @@ jobs:
     if: needs.check-secrets.outputs.has-netlify == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v6
         with:
