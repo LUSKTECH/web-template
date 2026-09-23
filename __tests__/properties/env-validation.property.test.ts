@@ -53,6 +53,7 @@ describe('Property 10: Environment validation distinguishes required vs optional
 
           // Build a clean env with only our controlled vars
           const testEnv: Record<string, string> = {
+            NODE_ENV: 'test',
             NEXT_PUBLIC_SITE_URL: validUrl,
           };
 
@@ -62,7 +63,7 @@ describe('Property 10: Environment validation distinguishes required vs optional
             }
           }
 
-          process.env = testEnv;
+          process.env = testEnv as NodeJS.ProcessEnv;
 
           const { validateEnv } = await import('@/lib/env');
           expect(() => validateEnv()).not.toThrow();
@@ -92,7 +93,7 @@ describe('Property 10: Environment validation distinguishes required vs optional
           vi.resetModules();
 
           // Build env WITHOUT NEXT_PUBLIC_SITE_URL
-          const testEnv: Record<string, string> = {};
+          const testEnv: Record<string, string> = { NODE_ENV: 'test' };
 
           for (const key of OPTIONAL_KEYS) {
             if (optionalPresence[key]) {
@@ -100,7 +101,7 @@ describe('Property 10: Environment validation distinguishes required vs optional
             }
           }
 
-          process.env = testEnv;
+          process.env = testEnv as NodeJS.ProcessEnv;
 
           const { validateEnv } = await import('@/lib/env');
           expect(() => validateEnv()).toThrow();
@@ -129,17 +130,16 @@ describe('Property 10: Environment validation distinguishes required vs optional
             .mockImplementation(() => {});
 
           const testEnv: Record<string, string> = {
+            NODE_ENV: 'test',
             NEXT_PUBLIC_SITE_URL: validUrl,
           };
-
-          // Set all optional keys EXCEPT the absent ones
           for (const key of OPTIONAL_KEYS) {
             if (!absentKeys.includes(key)) {
               testEnv[key] = 'some-value';
             }
           }
 
-          process.env = testEnv;
+          process.env = testEnv as NodeJS.ProcessEnv;
 
           const { validateEnv } = await import('@/lib/env');
           validateEnv();
