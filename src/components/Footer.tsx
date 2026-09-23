@@ -8,7 +8,7 @@ const footerStyle: React.CSSProperties = {
   borderTop: '1px solid #333',
   padding: '2rem 1.5rem',
   fontSize: '0.85rem',
-  color: '#999',
+  color: '#595959', // 7:1 contrast on white — meets WCAG AA and AAA
   textAlign: 'center',
 };
 
@@ -21,14 +21,14 @@ const navStyle: React.CSSProperties = {
 };
 
 const linkStyle: React.CSSProperties = {
-  color: '#ccc',
-  textDecoration: 'none',
+  color: '#595959', // 7:1 contrast on white — meets WCAG AA and AAA
+  textDecoration: 'underline',
 };
 
 const buttonStyle: React.CSSProperties = {
   background: 'none',
   border: 'none',
-  color: '#ccc',
+  color: '#595959', // 7:1 contrast on white — meets WCAG AA and AAA
   cursor: 'pointer',
   fontSize: '0.85rem',
   padding: 0,
