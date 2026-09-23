@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - run: npm ci
@@ -29,6 +29,7 @@ jobs:
 
       - name: Start server and run axe accessibility tests
         run: |
+          npx browser-driver-manager install chrome
           npx next start -p 3000 &
           npx wait-on http://localhost:3000 --timeout 30000
           npx @axe-core/cli http://localhost:3000 --exit

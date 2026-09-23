@@ -63,7 +63,7 @@ const cspConfigArb: fc.Arbitrary<CSPConfig> = fc
     for (const [key, arb] of entries) {
       record[key] = arb;
     }
-    return fc.record(record) as fc.Arbitrary<CSPConfig>;
+    return fc.record(record) as unknown as fc.Arbitrary<CSPConfig>;
   });
 
 describe('Property 11: CSP builder produces valid header from config', () => {
