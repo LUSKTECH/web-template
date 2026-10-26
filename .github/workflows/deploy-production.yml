@@ -14,7 +14,7 @@ concurrency:
 jobs:
   check-secrets:
     name: Check Secrets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       has-vercel: ${{ steps.vercel-check.outputs.defined }}
       has-netlify: ${{ steps.netlify-check.outputs.defined }}
@@ -43,13 +43,13 @@ jobs:
     name: Vercel Production Deploy
     needs: [check-secrets]
     if: needs.check-secrets.outputs.has-vercel == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - run: npm ci
@@ -69,7 +69,7 @@ jobs:
     name: Vercel Skip Notice
     needs: [check-secrets]
     if: needs.check-secrets.outputs.has-vercel != 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - run: echo "::notice::Vercel production deploy skipped — VERCEL_TOKEN secret is not configured."
 
@@ -77,13 +77,13 @@ jobs:
     name: Netlify Production Deploy
     needs: [check-secrets]
     if: needs.check-secrets.outputs.has-netlify == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - run: npm ci
@@ -109,6 +109,6 @@ jobs:
     name: Netlify Skip Notice
     needs: [check-secrets]
     if: needs.check-secrets.outputs.has-netlify != 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - run: echo "::notice::Netlify production deploy skipped — NETLIFY_AUTH_TOKEN secret is not configured."
