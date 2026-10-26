@@ -16,7 +16,7 @@ concurrency:
 jobs:
   check-secrets:
     name: Check Secrets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       has-codecov: ${{ steps.codecov-check.outputs.defined }}
     steps:
@@ -32,13 +32,13 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - run: npm ci
@@ -47,13 +47,13 @@ jobs:
 
   format-check:
     name: Format Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - run: npm ci
@@ -63,13 +63,13 @@ jobs:
   test:
     name: Test
     needs: [check-secrets]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - run: npm ci

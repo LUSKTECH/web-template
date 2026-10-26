@@ -14,7 +14,7 @@ concurrency:
 jobs:
   check-secrets:
     name: Check Secrets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       has-lhci: ${{ steps.lhci-check.outputs.defined }}
     steps:
@@ -32,13 +32,13 @@ jobs:
     name: Lighthouse CI
     needs: [check-secrets]
     if: needs.check-secrets.outputs.has-lhci == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - run: npm ci
@@ -57,6 +57,6 @@ jobs:
     name: Lighthouse Skip Notice
     needs: [check-secrets]
     if: needs.check-secrets.outputs.has-lhci != 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - run: echo "::notice::Lighthouse CI skipped — LHCI_GITHUB_APP_TOKEN secret is not configured."

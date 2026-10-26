@@ -14,7 +14,7 @@ concurrency:
 jobs:
   check-secrets:
     name: Check Secrets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       has-qlty: ${{ steps.qlty-check.outputs.defined }}
     steps:
@@ -32,7 +32,7 @@ jobs:
     name: qlty Analysis
     needs: [check-secrets]
     if: needs.check-secrets.outputs.has-qlty == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v6
         with:
@@ -40,7 +40,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - run: npm ci
@@ -59,6 +59,6 @@ jobs:
     name: qlty Skip Notice
     needs: [check-secrets]
     if: needs.check-secrets.outputs.has-qlty != 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - run: echo "::notice::qlty code quality analysis skipped — QLTY_TOKEN secret is not configured."
