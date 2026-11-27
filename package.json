@@ -39,7 +39,7 @@
     "lint-staged": "17.6.1",
     "prettier": "3.10.1",
     "typescript": "5.9.3",
-    "vitest": "5.1.0"
+    "vitest": "5.1.1"
   },
   "overrides": {
     "serialize-javascript": "7.0.4"
